@@ -1,5 +1,14 @@
 ﻿@model PagesIndexVM
 
+<form class="col-6" method="get" asp-action="Index" asp-controller="Pages">
+    <div class="form-group">
+        <div class="input-group mb-3">
+            <input class="form-control" type="text" name="searchTerm" placeholder="Search" value="">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </div>
+</form>
+
 <div class="mb-3 mt-3">
     <div class="h4"><span class="badge bg-secondary">Items: @(this.Model.Page * this.Model.Take + this.Model.Pages.Count) / @this.Model.TotalItemsCount</span> (@this.Model.Pages.Count)  <b>Pages</b></div>
 </div>

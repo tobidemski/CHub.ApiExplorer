@@ -1,5 +1,6 @@
 ﻿namespace Chub.ApiExplorer.Web.Controllers
 {
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
@@ -8,9 +9,7 @@
     using Chub.ApiExplorer.Web.Services;
     using Chub.ApiExplorer.Web.ViewModels;
     using Microsoft.AspNetCore.Mvc;
-    using Stylelabs.M.Base.Querying;
     using Stylelabs.M.Sdk.Contracts.Base;
-    using Stylelabs.M.Sdk.Contracts.Querying;
     using Stylelabs.M.Sdk.WebClient;
 
     public class PagesController : Controller
@@ -27,47 +26,25 @@
             this._pagePageService = pagePageService;
         }
 
-        public async Task<IActionResult> Index(int page = 0)
+        public async Task<IActionResult> Index(int page = 0, string searchTerm = "")
         {
             if (page < 0)
             {
                 page = 0;
             }
 
-            int skip = page * this._take;
-
-
-            Query query = Query.CreateQuery(q => q.Where(e => e.DefinitionName == "Portal.Page"));
-
-            query.Skip = skip;
-            query.Take = this._take;
-
-            IEntityQueryResult queryResult = await this._mClient.Querying.QueryAsync(
-                query);/*,
-                new EntityLoadConfiguration(
-                    new CultureLoadOption(this._defaultLanguage),
-                    new PropertyLoadOption(
-                        Constants.User.Username,
-                        "LastLoginDateTime",
-                        "HasToken"),
-                    new RelationLoadOption(
-                        Constants.User.UserGroupToUser,
-                        Constants.User.UserToUserProfile)
-                    ));*/
+            (IEnumerable<Page>, long totalItems) pages =
+                await this._pagePageService.GetSearchResultPage(searchTerm, page * this._take, this._take);
 
             PagesIndexVM model = new()
             {
                 Page = page,
                 Take = this._take,
-                TotalItemsCount = queryResult.TotalNumberOfResults,
+                TotalItemsCount = pages.totalItems,
                 Action = nameof(PagesController.Index),
-                Controller = this.GetControllerName()
+                Controller = this.GetControllerName(),
+                Pages = pages.Item1.ToList()
             };
-
-            foreach (IEntity item in queryResult.Items)
-            {
-                model.Pages.Add(await this._pagePageService.BuildPage(item));
-            }
 
             return this.View(model);
         }

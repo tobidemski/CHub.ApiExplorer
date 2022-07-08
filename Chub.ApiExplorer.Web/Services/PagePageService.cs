@@ -164,5 +164,19 @@
 
             return query;
         }
+
+        public async Task<(IEnumerable<Page>, long totalItems)> GetSearchResultPage(string? searchTerm, int skip, int take)
+        {
+            Query query = this.GetPageQuery(searchTerm, skip, take);
+            IEntityQueryResult queryResult = await this._mClient.Querying.QueryAsync(query);
+            List<Page> model = new List<Page>();
+
+            foreach (IEntity item in queryResult.Items)
+            {
+                 model.Add(await this.BuildPage(item));
+            }
+
+            return (model, queryResult.TotalNumberOfResults);
+        }
     }
 }
