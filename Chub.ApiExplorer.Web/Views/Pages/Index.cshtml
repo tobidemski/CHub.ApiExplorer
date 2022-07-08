@@ -1,0 +1,38 @@
+﻿@model PagesIndexVM
+
+<div class="mb-3 mt-3">
+    <div class="h4"><span class="badge bg-secondary">Items: @(this.Model.Page * this.Model.Take + this.Model.Pages.Count) / @this.Model.TotalItemsCount</span> (@this.Model.Pages.Count)  <b>Pages</b></div>
+</div>
+
+@{
+    var culture = new System.Globalization.CultureInfo("en-US");
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Is Title Visible</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Page item in this.Model.Pages)
+        {
+            <tr>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    <a asp-action="Page" asp-controller="Pages" asp-route-id="@item.Identifier">@(string.IsNullOrEmpty(item.Title) ? item.Name : item.Title)</a>
+                </td>
+                <td>
+                    <input class="form-check-input" type="checkbox" disabled @(item.IsTitleVisible ? "checked" : "") />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@await Html.PartialAsync("~/Views/Shared/_Pagination.cshtml", this.Model)

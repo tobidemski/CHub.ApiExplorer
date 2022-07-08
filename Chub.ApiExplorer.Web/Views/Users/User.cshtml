@@ -1,0 +1,25 @@
+﻿@model UsersUserVM
+
+
+<div class="card border-secondary mb-3 mt-3">
+    <div class="card-header"><b>@this.Model.User.Username</b></div>
+    <!--<div class="card-body">
+       <h4 class="card-title"></h4>
+    </div>-->
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">ID: @this.Model.User.Id</li>
+        <li class="list-group-item">Has Token: <input class="form-check-input" type="checkbox" disabled @(this.Model.User.HasToken.HasValue && this.Model.User.HasToken.Value ? "checked" : "") /></li>
+    </ul>
+</div>
+
+<div>
+    Groups
+    <ul>
+        @foreach (var item in this.Model.User.Groups)
+        {
+            <li>
+                Name: @item.Name
+            </li>
+        }
+    </ul>
+</div>

@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>disable</ImplicitUsings>
+
+
+		<!-- Prevent uneeded files in output folder. https://github.com/dotnet/roslyn/issues/39458 -->
+		<SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
+
+		<!-- Prevent transform the web.config TODO: check if need while running in IIS inprocess (same problem?) -->
+		<IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+
+		<!-- Prevent to transform the web with boilerplate to get the app started while running in IIS inprocess -->
+		<ANCMPreConfiguredForIIS>true</ANCMPreConfiguredForIIS>
+
+		<CopyRazorGenerateFilesToPublishDirectory Condition="'$(Configuration)' == 'Debug'">true</CopyRazorGenerateFilesToPublishDirectory>
+		<CopyRefAssembliesToPublishDirectory Condition="'$(Configuration)' == 'Debug'">false</CopyRefAssembliesToPublishDirectory>
+		<MvcRazorCompileOnPublish Condition="'$(Configuration)' == 'Debug'">false</MvcRazorCompileOnPublish>
+		<RazorCompileOnBuild Condition="'$(Configuration)' == 'Debug'">false</RazorCompileOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.6" />
+		<PackageReference Include="Stylelabs.M.Sdk.WebClient" Version="4.2.3" />
+	</ItemGroup>
+
+</Project>

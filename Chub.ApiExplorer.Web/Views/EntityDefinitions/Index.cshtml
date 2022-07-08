@@ -1,0 +1,36 @@
+﻿@model EntityDefinitionsIndexVM
+
+
+<div class="mb-3 mt-3">
+    <div class="h4"><span class="badge bg-secondary">Items: @(this.Model.Page * this.Model.Take + this.Model.Items.Count) / @this.Model.TotalItemsCount</span> <b> (@this.Model.Items.Count) Entity Definitions</b></div>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Label</th>
+            <th>Is System owned</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (EntityDefinition item in this.Model.Items)
+        {
+            string labelName = string.IsNullOrEmpty(item.Label) ? item.Name : item.Label;
+
+            <tr>
+                <td>@item.Id</td>
+                <td>
+                    <a asp-action="@nameof(Chub.ApiExplorer.Web.Controllers.EntityDefinitionsController.EntityDefinition)" , asp-controller="EntityDefinitions" asp-route-id="@item.Id">@labelName</a>
+                </td>
+                <td>
+                    <input class="form-check-input" type="checkbox" disabled @(item.IsSystemOwned ? "checked" : "") />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@await Html.PartialAsync("~/Views/Shared/_Pagination.cshtml", this.Model)

@@ -1,0 +1,11 @@
+﻿@model List<EntityDefinition>
+
+
+<ul class="list-group list-group-flush">
+    @foreach (var item in this.Model)
+    {
+        <li class="list-group-item">
+            <a asp-action="EntityDefinition" asp-controller="EntityDefinitions" asp-route-id="@item.Id">@item.Name</a>
+        </li>
+    }
+</ul>

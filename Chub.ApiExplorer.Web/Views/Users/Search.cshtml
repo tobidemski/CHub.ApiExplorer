@@ -1,0 +1,59 @@
+﻿@using Stylelabs.M.Sdk.Contracts.Base
+@model List<User>
+
+<div class="user-results mt-4">
+
+    <div class="row">
+        @foreach (User item in this.Model)
+        {
+            string avatarUrl = string.IsNullOrEmpty(item.AvatarUrl) ? "/dist/images/avatar-placeholder.svg" : item.AvatarUrl;
+            <div class="col-auto mb-4">
+
+                <div class="card d-inline-flex">
+                    <div class="d-flex flex-direction justify-content-center mt-4">
+                        <div class="profile-image-container">
+                            <img src="@avatarUrl" class="card-img-top profile-image" alt="Monkey">
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">@item.Username</p>
+                        <div class="card-footer-content">
+                            <a asp-action="User" asp-controller="Users" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .user-results .card {
+        height: 100%;
+        width: 15rem;
+    }
+
+        .user-results .card .card-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+    .user-results .card-footer-content {
+        margin-top: auto;
+    }
+
+    .user-results .profile-image-container {
+        width: 8rem;
+        height: 8rem;
+    }
+
+        .user-results .profile-image-container .profile-image {
+            background-color: rgba(0,0,0,0.26);
+            object-fit: cover;
+            border-radius: 50%;
+            width: 100%;
+            height: 100%;
+        }
+</style>

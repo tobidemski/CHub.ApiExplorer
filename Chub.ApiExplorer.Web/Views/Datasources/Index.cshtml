@@ -1,0 +1,46 @@
+﻿@using Stylelabs.M.Sdk.Contracts.Base
+@model DatasourcesIndexVM
+
+<div class="mb-3 mt-3">
+    <div class="h4"><span class="badge bg-secondary">Items: @this.Model.TotalItemsCount</span> (@this.Model.Datasources.Count) <b>Datasources</b></div>
+</div>
+
+@{
+    var culture = new System.Globalization.CultureInfo("en-US");
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Is System Owned</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in this.Model.Datasources)
+        {
+            string label = item.Labels != null && item.Labels.ContainsKey(culture) ? item.Labels[culture] : "";
+            string name = string.IsNullOrEmpty(label) ? item.Name : label;
+            <tr>
+                <td>
+                    <a asp-action="Datasource" asp-controller="Datasources" asp-route-name="@item.Name">@name</a>
+                </td>
+                <td>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" disabled @(item.IsSystemOwned ? "checked" : "") />
+                    </div>
+                </td>
+                <td>
+                    @if (item.Type == DataSourceType.Hierarchical)
+                    {
+                        <i title="@item.Type" class="fa-solid fa-sitemap"></i>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@await Html.PartialAsync("~/Views/Shared/_Pagination.cshtml", this.Model)

@@ -1,0 +1,52 @@
+﻿@model UsersIndexVM
+
+
+<div class="mb-3 mt-3">
+    <div class="h4"><span class="badge bg-secondary">Items: @(this.Model.Page * this.Model.Take + this.Model.Users.Count) / @this.Model.TotalItemsCount</span> (@this.Model.Users.Count)  <b>Users</b></div>
+</div>
+
+@{
+    var culture = new System.Globalization.CultureInfo("en-US");
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Has Token</th>
+            <th>Groups</th>
+            <th>Last login date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (User item in this.Model.Users)
+        {
+            <tr>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    <a asp-action="User" asp-controller="Users" asp-route-id="@item.Id">@item.Username</a>
+                </td>
+                <td>
+                    <input class="form-check-input" type="checkbox" disabled @(item.HasToken.HasValue && item.HasToken.Value ? "checked" : "") />
+                </td>
+                <td>
+                    @item.Groups.Count
+                </td>
+                <td>
+                    @if(item.LastLoginDateTime.HasValue && item.LastLoginDateTime != default(DateTimeOffset))
+                    {
+                        <div>
+                            @item.LastLoginDateTime.Value.DateTime
+                        </div>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@await Html.PartialAsync("~/Views/Shared/_Pagination.cshtml", this.Model)

@@ -1,0 +1,12 @@
+﻿@using Stylelabs.M.Sdk.Contracts.Base
+@model IList<IDataSource>
+
+
+<ul class="list-group list-group-flush">
+    @foreach (IDataSource item in this.Model)
+    {
+        <li class="list-group-item">
+            <a asp-action="Datasource" asp-controller="Datasources" asp-route-name="@item.Name">@item.Name</a>
+        </li>
+    }
+</ul>

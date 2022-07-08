@@ -1,0 +1,174 @@
+﻿@model EntityDefinitionsEntityDefinitionVM
+
+@{
+    EntityDefinition def = this.Model.EntityDefinition!;
+
+    string name = string.IsNullOrEmpty(def.Label) ? def.Name : def.Label;
+}
+
+<!--
+<div class="mb-3 mt-3">
+    <div class="h4"><span class="badge bg-secondary">ID: @def.Id</span> <b>@name</b></div>
+</div>-->
+
+<div class="card border-secondary mt-3 mb-3">
+    <div class="card-header"><b><a target="_blank" href="@def.Url">@name</a></b></div>
+    <!--<div class="card-body">
+       <h4 class="card-title"></h4>
+    </div>-->
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">ID: @def.Id</li>
+        <li class="list-group-item">Name: @def.Name</li>
+
+        <li class="list-group-item" style="padding: 0;">
+
+            <div class="accordion-flush" id="accordionProperties">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" style="padding: .5rem 1rem;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            <b>Properties</b>
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionProperties" style="">
+                        <div class="accordion-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">System owned: <input class="form-check-input" type="checkbox" disabled @(def.IsSystemOwned ? "checked" : "") /></li>
+                                <li class="list-group-item">Is manual sorting allowed: <input class="form-check-input" type="checkbox" disabled @(def.IsManualSortingAllowed ? "checked" : "") /></li>
+                                <li class="list-group-item">Display template: @def.DisplayTemplate</li>
+                                <li class="list-group-item">Is path enabled definition: <input class="form-check-input" type="checkbox" disabled @(def.IsPathEnabledDefinition ? "checked" : "") /></li>
+                                <li class="list-group-item">Is taxonomy item definition: <input class="form-check-input" type="checkbox" disabled @(def.IsTaxonomyItemDefinition ? "checked" : "") /></li>
+                                <li class="list-group-item">Created by: @def.CreatedBy</li>
+                                <li class="list-group-item">Created on: @def.CreatedOn</li>
+                                <li class="list-group-item">Modified by: @def.ModifiedBy</li>
+                                <li class="list-group-item">Modifed on: @def.ModifiedOn</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </li>
+        
+    </ul>
+</div>
+    
+
+@foreach (var memberGroup in def.MemberGroups)
+{
+    <table class="table table-striped caption-top mb-5">
+        <caption>Group: @memberGroup.Label</caption>
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Is Required
+                </th>
+                <th>
+                    Allow Navigation
+                </th>
+                <th>
+                    Allow Updates
+                </th>
+                <th>
+                    Cardinality
+                </th>
+                <th>
+                    Is Unique
+                </th>
+                <th>
+                    Included in Content
+                </th>
+                <th>
+                    Is Taxonomy Hierarchy Relation
+                </th>
+                <th>
+                    Is Taxonomy Relation
+                </th>
+                <th>
+                    Datasource
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var member in memberGroup.Members)
+            {
+                <tr>
+                    <td>
+                        @if (member.IsRelationType)
+                        {
+                            <a asp-action="@nameof(Chub.ApiExplorer.Web.Controllers.EntityDefinitionsController.EntityDefinition)" asp-controller="EntityDefinitions" asp-route-id="@member.AssociatedEntityDefinition">@member.Name</a>
+                        }
+                        else
+                        {
+                            <text>@member.Name</text>
+                        }
+                    </td>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled @(member.IsRequired ? "checked" : "") />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled @(member.AllowNavigation ? "checked" : "") />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled @(member.AllowUpdates ? "checked" : "") />
+                        </div>
+                    </td>
+                    <td>
+                        @GetCardinality(member.Cardinality.ToString())
+                    </td>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled @(member.IsUnique ? "checked" : "") />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled @(member.IncludedInContent ? "checked" : "") />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled @(member.IsTaxonomyHierarchyRelation ? "checked" : "") />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" disabled @(member.IsTaxonomyRelation ? "checked" : "") />
+                        </div>
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(member.DataSourceName))
+                        {
+                            <a asp-action="Datasource" asp-controller="Datasources" asp-route-name="@member.DataSourceName">@member.DataSourceName</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@{
+    string GetCardinality(string cardinality)
+    {
+        switch (cardinality)
+        {
+            case "OneToMany":
+                return "1:n";
+            case "ManyToMany":
+                return "m:n";
+            case "OneToOne":
+                return "1:1";
+            default:
+                return cardinality;
+        }
+    }
+
+}

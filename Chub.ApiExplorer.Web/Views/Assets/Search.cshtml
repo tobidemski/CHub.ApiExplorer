@@ -1,0 +1,51 @@
+﻿@model List<Asset>
+
+<div class="asset-results mt-4">
+
+    <div class="row">
+        @foreach (Asset item in this.Model)
+        {
+            <div class="col-auto mb-4">
+
+                <div class="card d-inline-flex">
+                    <div class="d-flex flex-direction justify-content-center mt-4">
+                        <div class="profile-image-container">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" height="48" />
+                            }
+                            else
+                            {
+                                <i class="fa-solid fa-image" style="font-size: 3rem;"></i>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">@item.Title</p>
+                        <div class="card-footer-content">
+                            <a asp-action="Asset" asp-controller="Assets" asp-route-id="@item.Id" class="btn btn-primary">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .asset-results .card {
+        height: 100%;
+        width: 15rem;
+    }
+
+    .asset-results .card .card-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .asset-results .card-footer-content {
+        margin-top: auto;
+    }
+</style>
